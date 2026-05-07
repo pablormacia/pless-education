@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 
-export default async function Home() {
+export default async function DashboardPage() {
   const supabase = await createClient()
 
   const {
@@ -8,8 +8,10 @@ export default async function Home() {
   } = await supabase.auth.getUser()
 
   return (
-    <main>
-      <h1>Pless Education</h1>
+    <main className="p-8">
+      <h1 className="text-2xl font-bold">
+        Dashboard
+      </h1>
 
       <pre>{JSON.stringify(user, null, 2)}</pre>
     </main>
