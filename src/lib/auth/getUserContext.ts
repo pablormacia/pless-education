@@ -1,30 +1,15 @@
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { getSessionUser } from './getSessionUser'
 
 export async function getUserContext() {
-  const supabase = await createClient()
+  const session = await getSessionUser()
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  // no logueado
-  if (!user) {
+  if (!session?.user || !session.profile) {
     redirect('/login')
   }
 
-  // profile
-  const { data: profile, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single()
+  const { user, profile } = session
 
-  if (error || !profile) {
-    throw new Error('Profile not found')
-  }
-
-  // estados
   if (profile.status === 'pending') {
     redirect('/pending')
   }
