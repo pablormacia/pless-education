@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { getSessionUser } from './getSessionUser'
+import { getPermissions } from './getPermissions'
 
 export async function getUserContext() {
   const session = await getSessionUser()
@@ -9,6 +10,8 @@ export async function getUserContext() {
   }
 
   const { user, profile } = session
+
+  const permissions = await getPermissions(user.id)
 
   if (profile.status === 'pending') {
     redirect('/pending')
@@ -25,5 +28,6 @@ export async function getUserContext() {
   return {
     user,
     profile,
+    permissions,
   }
 }
