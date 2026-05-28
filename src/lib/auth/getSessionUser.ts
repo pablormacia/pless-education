@@ -11,14 +11,18 @@ export async function getSessionUser() {
     return null
   }
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
+  const { data: authAccount } = await supabase
+    .from('auth_accounts')
+    .select(`
+      *,
+      person:people (*)
+    `)
+    .eq('auth_user_id', user.id)
     .single()
 
   return {
     user,
-    profile,
+    authAccount,
+    person: authAccount?.person ?? null,
   }
 }

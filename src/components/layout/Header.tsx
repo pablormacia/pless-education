@@ -1,27 +1,38 @@
 import LogoutButton from './LogoutButton'
 
+import type { Database } from '@/types/supabase'
+
+type Person =
+  Database['public']['Tables']['people']['Row']
+
+type AuthAccount =
+  Database['public']['Tables']['auth_accounts']['Row']
+
 type Props = {
-  profile: {
-    full_name: string | null
-    email: string
-    status: string
-  }
+  person: Person
+  authAccount: AuthAccount
 }
 
-export default function Header({ profile }: Props) {
+export default function Header({
+  person,
+  authAccount,
+}: Props) {
   return (
-    <header className="border-b p-4 flex items-center justify-between">
+    <header className="flex items-center justify-between border-b p-4">
       <div>
-        <h1 className="font-bold text-xl">
+        <h1 className="text-xl font-bold">
           Pless Education
         </h1>
       </div>
 
       <div className="flex items-center gap-4">
-        <div className="text-sm text-right">
-          <p>{profile.full_name ?? 'Usuario'}</p>
+        <div className="text-right text-sm">
+          <p>
+            {person.first_name} {person.last_name}
+          </p>
+
           <p className="text-gray-500">
-            {profile.email}
+            {authAccount.email ?? 'Sin email'}
           </p>
         </div>
 

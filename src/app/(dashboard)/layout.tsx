@@ -1,20 +1,28 @@
 import { ReactNode } from 'react'
 
-import { getUserContext } from '@/lib/auth/getUserContext'
+import { getUserContext }
+  from '@/lib/auth/getUserContext'
 
-import AppShell from '@/components/layout/AppShell'
+import AppShell
+  from '@/components/layout/AppShell'
+
+type Props = {
+  children: ReactNode
+}
 
 export default async function DashboardLayout({
   children,
-}: {
-  children: ReactNode
-}) {
-  const { profile, permissions } =
-    await getUserContext()
+}: Props) {
+  const {
+    person,
+    authAccount,
+    permissions,
+  } = await getUserContext()
 
   return (
     <AppShell
-      profile={profile}
+      person={person}
+      authAccount={authAccount}
       permissions={permissions}
     >
       {children}

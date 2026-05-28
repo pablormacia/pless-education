@@ -1,33 +1,49 @@
 import { redirect } from 'next/navigation'
+
 import { getSessionUser } from './getSessionUser'
 import { getPermissions } from './getPermissions'
 
 export async function getUserContext() {
   const session = await getSessionUser()
 
-  if (!session?.user || !session.profile) {
+  if (!session?.user) {
     redirect('/login')
   }
 
-  const { user, profile } = session
+  const { user, authAccount, person } = session
 
-  const permissions = await getPermissions(user.id)
+  // Usuario autenticado
+  // pero todavía no vinculó identidad institucional
+  if (!authAccount) {
+    redirect('/claim-account')
+  }
 
-  if (profile.status === 'pending') {
+  // Auth account sin persona vinculada
+  if (!person) {
+    redirect('/claim-account')
+  }
+
+  // Estados acceso digital
+  if (authAccount.status === 'pending_validation') {
     redirect('/pending')
   }
 
-  if (profile.status === 'blocked') {
+  if (authAccount.status === 'blocked') {
     redirect('/blocked')
   }
 
-  if (profile.status !== 'active') {
+  if (authAccount.status !== 'active') {
     redirect('/login')
   }
 
+  const permissions = await getPermissions(
+    person.id
+  )
+
   return {
     user,
-    profile,
+    authAccount,
+    person,
     permissions,
   }
 }

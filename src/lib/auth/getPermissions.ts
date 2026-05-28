@@ -1,10 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
 
-export async function getPermissions(userId: string) {
+export async function getPermissions(personId: string) {
   const supabase = await createClient()
 
   const { data, error } = await supabase
-    .from('user_roles')
+    .from('person_roles')
     .select(`
       role:roles (
         role_permissions (
@@ -14,7 +14,7 @@ export async function getPermissions(userId: string) {
         )
       )
     `)
-    .eq('user_id', userId)
+    .eq('person_id', personId)
 
   if (error || !data) {
     return []
