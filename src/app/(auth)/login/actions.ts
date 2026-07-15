@@ -31,6 +31,8 @@ export async function loginWithGoogle() {
     },
   })
 
+  //console.log('data login con Google:', data)
+
   if (error) {
     throw new Error(error.message)
   }
