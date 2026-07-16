@@ -5,3 +5,7 @@ export type Person = {
   document_number: string | null
   status: 'active' | 'inactive' | 'archived'
 }
+
+export type PersonWithRoles = Person & {
+  roles: Role[]
+}

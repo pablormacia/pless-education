@@ -1,4 +1,9 @@
+import { User } from "@supabase/supabase-js";
+
+
+
 export function getRedirectForAuth(session: {
+  user: User;
   authAccount: any;
   person: any;
 }) {

@@ -1,24 +1,32 @@
-export default function PeoplePage() {
+import { getPeople }
+  from '@/modules/people/queries'
+
+import PeopleTable from '@/modules/people/components/PeopleTable'
+
+
+export default async function PeoplePage() {
+
+  const people = await getPeople()
+
+
   return (
-    <div>
-      <div className="flex items-center justify-between mb-8">
+    <main className="space-y-6">
+
+      <header>
         <h1 className="text-3xl font-bold">
           Personas
         </h1>
 
-        <button
-          className="
-            rounded-lg bg-black
-            text-white px-4 py-2
-          "
-        >
-          Nueva persona
-        </button>
-      </div>
+        <p className="text-muted-foreground">
+          Gestión de alumnos, familias y personal.
+        </p>
+      </header>
 
-      <div className="border rounded-2xl p-6">
-        Lista de personas
-      </div>
-    </div>
+
+      <PeopleTable
+        people={people}
+      />
+
+    </main>
   )
 }
