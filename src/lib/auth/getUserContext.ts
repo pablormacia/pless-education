@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation'
 
 import { getSessionUser } from './getSessionUser'
 import { getPermissions } from './getPermissions'
+import { getAllPermissions } from './getAllPermissions'
+import { hasSystemRole } from './hasSystemRole'
 
 export async function getUserContext() {
   const session = await getSessionUser()
@@ -12,33 +14,36 @@ export async function getUserContext() {
 
   const { user, authAccount, person } = session
 
-  // Usuario autenticado
-  // pero todavía no vinculó identidad institucional
   if (!authAccount) {
     redirect('/claim-account')
   }
 
-  // Auth account sin persona vinculada
   if (!person) {
     redirect('/claim-account')
   }
 
-  // Estados acceso digital
-  if (authAccount.status === 'pending_validation') {
-    redirect('/pending')
+  switch (authAccount.status) {
+    case 'pending_claim':
+      redirect('/claim-account')
+
+    case 'pending_validation':
+      redirect('/pending')
+
+    case 'blocked':
+      redirect('/blocked')
+
+    case 'active':
+      break
+
+    default:
+      redirect('/login')
   }
 
-  if (authAccount.status === 'blocked') {
-    redirect('/blocked')
-  }
+  const isSystem = await hasSystemRole(person.id)
 
-  if (authAccount.status !== 'active') {
-    redirect('/login')
-  }
-
-  const permissions = await getPermissions(
-    person.id
-  )
+  const permissions = isSystem
+    ? await getAllPermissions()
+    : await getPermissions(person.id)
 
   return {
     user,
