@@ -1,11 +1,15 @@
-export type Person = {
-  id: string
-  first_name: string
-  last_name: string
-  document_number: string | null
-  status: 'active' | 'inactive' | 'archived'
-}
+export type PersonStatus =
+  | 'active'
+  | 'inactive'
+  | 'archived'
 
-export type PersonWithRoles = Person & {
-  roles: Role[]
+export interface Person {
+  id: string
+
+  firstName: string
+  lastName: string
+
+  documentNumber: string | null
+
+  status: PersonStatus | null
 }

@@ -1,16 +1,14 @@
 import { createClient } from '@/lib/supabase/server'
-import { Person } from './types'
 
+import type { Person } from '../types'
+
+import { mapPerson } from './people.mapper'
 
 export async function getPeople(): Promise<Person[]> {
 
   const supabase = await createClient()
 
-
-  const {
-    data,
-    error,
-  } = await supabase
+  const { data, error } = await supabase
     .from('people')
     .select(`
       id,
@@ -22,11 +20,9 @@ export async function getPeople(): Promise<Person[]> {
     .order('last_name')
     .order('first_name')
 
-
   if (error) {
     throw new Error(error.message)
   }
 
-
-  return data ?? []
+  return (data ?? []).map(mapPerson)
 }

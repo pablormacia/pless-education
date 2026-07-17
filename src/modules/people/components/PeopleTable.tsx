@@ -39,14 +39,14 @@ export default function PeopleTable({
           <tr key={person.id}>
 
             <td>
-              {person.first_name}
+              {person.firstName}
               {' '}
-              {person.last_name}
+              {person.lastName}
             </td>
 
 
             <td>
-              {person.document_number ?? '-'}
+              {person.documentNumber ?? '-'}
             </td>
 
 

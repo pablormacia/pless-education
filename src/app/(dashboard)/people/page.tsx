@@ -1,5 +1,4 @@
-import { getPeople }
-  from '@/modules/people/queries'
+import { getPeople } from '@/modules/people'
 
 import PeopleTable from '@/modules/people/components/PeopleTable'
 
