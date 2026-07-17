@@ -36,7 +36,7 @@ export interface DataTableProps<TData, TValue = unknown> {
   /**
    * Toolbar personalizado.
    */
-  toolbar?: ReactNode
+  toolbarContent?: ReactNode
 
   /**
    * Mensaje cuando no existen registros.

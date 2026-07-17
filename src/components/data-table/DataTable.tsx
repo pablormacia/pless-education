@@ -9,6 +9,7 @@ import {
   useReactTable,
   VisibilityState,
   getFilteredRowModel,
+  ColumnFiltersState,
 } from "@tanstack/react-table";
 
 import {
@@ -33,9 +34,9 @@ export function DataTable<TData, TValue = unknown>({
   data,
   showToolbar = true,
   showPagination = true,
-  toolbar,
+  toolbarContent,
   emptyMessage = "No hay registros.",
-  loading
+  loading = false
 }: DataTableProps<TData, TValue>) {
   /**
    * Estado del ordenamiento.
@@ -47,6 +48,10 @@ export function DataTable<TData, TValue = unknown>({
    */
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
+  const [rowSelection, setRowSelection] = useState({});
+
   /**
    * Creamos la instancia de TanStack.
    */
@@ -57,11 +62,14 @@ export function DataTable<TData, TValue = unknown>({
     state: {
       sorting,
       columnVisibility,
+      columnFilters,
     },
 
     onSortingChange: setSorting,
 
     onColumnVisibilityChange: setColumnVisibility,
+
+    onColumnFiltersChange: setColumnFilters,
 
     getCoreRowModel: getCoreRowModel(),
 
@@ -74,7 +82,7 @@ export function DataTable<TData, TValue = unknown>({
 
   return (
     <div className="space-y-4">
-      {showToolbar && (toolbar ?? <DataTableToolbar table={table} />)}
+      {showToolbar && (toolbarContent ?? <DataTableToolbar table={table} />)}
 
       <div className="rounded-md border">
         <Table>
@@ -97,10 +105,13 @@ export function DataTable<TData, TValue = unknown>({
 
           <TableBody>
             {loading ? (
-              <DataTableLoading rows={5} columns={columns.length} />
+              <DataTableLoading rows={5} columns={table.getVisibleLeafColumns().length} />
             ) : table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
@@ -112,7 +123,7 @@ export function DataTable<TData, TValue = unknown>({
                 </TableRow>
               ))
             ) : (
-              <DataTableEmpty message={emptyMessage} colSpan={columns.length} />
+              <DataTableEmpty message={emptyMessage} colSpan={table.getVisibleLeafColumns().length} />
             )}
           </TableBody>
         </Table>
